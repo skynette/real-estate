@@ -36,7 +36,7 @@ SITE_ID = 1
 THIRD_PARTY_APPS = [
     'rest_framework',
     'django_filters',
-    'django_contries',
+    'django_countries',
     'phonenumber_field',
 ]
 
