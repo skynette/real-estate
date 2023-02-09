@@ -1,6 +1,6 @@
 Django==3.2.7
 djangorestframework==3.12.4
-django-environ==0.7.0
+python-dotenv==0.21.0
 django-filter==21.1
 django-autoslug==1.9.8
 django-countries==7.2.1
