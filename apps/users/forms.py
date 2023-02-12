@@ -9,7 +9,7 @@ class CustomUserCreationForm(UserCreationForm):
 		error_class = "error"
 		
 
-class CustomUserChangeFrom(UserChangeForm):
+class CustomUserChangeForm(UserChangeForm):
 	class Meta:
 		model = User
 		fields = ["email", "username", "first_name", "last_name"]
