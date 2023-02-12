@@ -41,6 +41,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     'django_countries',
     'phonenumber_field',
+    'drf_yasg',
 ]
 
 LOCAL_APPS = [
@@ -165,7 +166,7 @@ SIMPLE_JWT = {
     'JWK_URL': None,
     'LEEWAY': 0,
 
-    'AUTH_HEADER_TYPES': ('Bearer', "JWT"),
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
@@ -181,26 +182,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-
-# DJOSER = {
-#     "LOGIN_FIELD": "email",
-#     "USER_CREATE_PASSWORD_RETYPE": True,
-#     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
-#     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
-#     "SEND_CONFIRMATION_EMAIL": True,
-#     "PASSWORD_RESER_CONFIRM_URL": "pasword/reset/confirm/{uid}/{token}",
-#     "SET_PASSWORD_RETYPE": True,
-#     "PASSWORD_RESET_CONFIRM_RETYPE": True,
-#     "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
-#     "ACTIVATION_URL": "activate/{uid}/{token}",
-#     "SEND_ACTIVATION_EMAIL": True,
-#     "SERIALIZERS": {
-#         "user_create": "apps.users.serializers.CreateUserSerializer",
-#         "user": "apps.users.serializers.UserSerializer",
-#         "current_user": "apps.users.serializers.UserSerializer",
-#         "user_delete": "djoser.serializers.UserDeleteSerializer",
-#     }
-# }
 
 # logging
 import logging

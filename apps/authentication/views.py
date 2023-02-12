@@ -2,8 +2,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from apps.authentication.serializers import MyTokenObtainPairSerializer, RegistrationSerializer
 from apps.authentication.utils import get_tokens_for_user
 from rest_framework.response import Response
-from django.contrib.auth.models import User
 from rest_framework import generics, status
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class RegistrationAPIView(generics.GenericAPIView):
