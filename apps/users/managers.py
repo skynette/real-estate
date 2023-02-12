@@ -1,7 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 class CustomUserManager(BaseUserManager):
 	"""
@@ -57,6 +57,13 @@ class CustomUserManager(BaseUserManager):
 			raise ValueError(_('Superuser must have is_staff=True.'))
 		if extra_fields.get('is_superuser') is not True:
 			raise ValueError(_('Superuser must have is_superuser=True.'))
-		if extra_fields.get('is_super_admin') is not True:
-			raise ValueError(_('SuperAdmin must have is_super_admin=True.'))
-		return self.create_user(email, password, **extra_fields)
+		if not password:
+			raise ValueError(_('Superuser must have password'))
+		if email:
+			email = self.normalize_email(email)
+			self.email_validator(email)
+		else:
+			raise ValueError(_("Admin account: An email is required"))
+		
+		
+		return self.create_user(username, first_name, last_name, email, password, **extra_fields)
