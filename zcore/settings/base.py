@@ -141,7 +141,7 @@ from django.utils.log import DEFAULT_LOGGING
 logger = logging.getLogger(__name__)
 
 LOG_LEVEL = "INFO"
-logging.config.dictConfig = (
+logging.config.dictConfig(
     {
         "version": 1,
         "disable_existing_loggers": False,
