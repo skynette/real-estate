@@ -36,11 +36,12 @@ SITE_ID = 1
 
 THIRD_PARTY_APPS = [
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'django_countries',
     'phonenumber_field',
     'djoser',
-    "rest_framework_simplejwt",
 ]
 
 LOCAL_APPS = [
@@ -48,6 +49,7 @@ LOCAL_APPS = [
     'apps.users',
     'apps.profiles',
     'apps.ratings',
+    'apps.authentication',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
