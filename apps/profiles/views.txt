@@ -1,0 +1,38 @@
+from rest_framework import permissions
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes, renderer_classes
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+
+from .models import Profile
+from .serializers import UpdateProfileSerializer
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_profile(request, *args, **kwargs):
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
+    serializer = ProfileSerializer(user_profile, context={"request": request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+	
+
+@api_view(['PATCH'])
+@permission_classes([permissions.IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def update_profile(request, username):
+    try:
+        profile = Profile.objects.get(user__username=username)
+    except:
+        raise ProfileNotFoundException
+    
+    user_name = request.user.username
+    if user_name != username:
+        raise NotYourProfileException
+    
+    data = request.data
+    serializer = UpdateProfileSerializer(instance=profile, data=data, partial=True)
+    
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
