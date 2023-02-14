@@ -24,6 +24,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('supersecret/', admin.site.urls),
     path('api/v1/auth/', include('apps.authentication.urls')),
+    path('api/v1/profile/', include('apps.profiles.urls')),
 
     # docs
     path('swagger(<format>\.json|\.yaml)/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
