@@ -32,3 +32,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 			representation['top_agent'] = True
 		return representation
 
+class UpdateProfileSerializer(serializers.ModelSerializer):
+	country = CountryField(name_only=True)
+
+	class Meta:
+		model = Profile
+		exclude = ['pkid', 'created_at', 'updated_at']
+
+	def to_representation(self, instance):
+		representation = super().to_representation(instance)
+		if instance.top_agent:
+			representation['top_agent'] = True
+		return representation
