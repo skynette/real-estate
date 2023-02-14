@@ -8,9 +8,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(source="user.first_name")
 	last_name = serializers.CharField(source="user.last_name")
 	email = serializers.EmailField(source="user.email")
-	full_name = serializers.SerializerMethodField(readonly=True)
+	full_name = serializers.SerializerMethodField(read_only=True)
 	country = CountryField(name_only=True)
-	reveiews = serializers.SerializerMethodField(readonly=True)
+	reveiews = serializers.SerializerMethodField(read_only=True)
 
 	class Meta:
 		model = Profile
