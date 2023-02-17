@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_countries import CountryField
+from django_countries.fields import CountryField
 from apps.common.models import TimeStampedUUIDModel
 
 User = get_user_model()
@@ -45,9 +45,27 @@ class Property(TimeStampedUUIDModel):
 	bedrooms = models.IntegerField(_("bedrooms"), default=1)
 	bathrooms = models.IntegerField(_("bathrooms"), default=1)
 	advert_type = models.CharField(_("Advert Type"), max_length=255, choices=AdvertType.choices, default=AdvertType.FOR_SALE)
-	property_type = models.CharField(_("Property Type"), max_length=255, choices=PropertyType.CHOICES, default=PropertyType.OTHER)
-	cover_photo = models.ImageField(_("Main Photo"))
-	
+	property_type = models.CharField(_("Property Type"), max_length=255, choices=PropertyType.choices, default=PropertyType.OTHER)
+	cover_photo = models.ImageField(_("Main Photo"), default="/house_sample.jpg", null=True, blank=True)
+	photo1 = models.ImageField(_("Photo1"), default="/house_sample.jpg", null=True, blank=True)
+	photo2 = models.ImageField(_("photo2"), default="/house_sample.jpg", null=True, blank=True)
+	photo3 = models.ImageField(_("photo3"), default="/house_sample.jpg", null=True, blank=True)
+	photo4 = models.ImageField(_("photo4"), default="/house_sample.jpg", null=True, blank=True)
+	published_status = models.BooleanField(_("published_status"), default=False)
+	views = models.IntegerField(_("Total views"), default=0)
 
+	objects = models.Manager()
+	published = PropertyPublishedManager()
 
+	def __str__(self) -> str:
+		return f"{self.title}"
 
+	class Meta:
+		verbose_name = "Property"
+		verbose_name_plural = "Properties"
+
+	def save(self, *args, **kwargs):
+		self.title = str.title(self.title)
+		self.description = str.description(self.description)
+		self.ref_code = "".join(random.choices(string.ascii_uppercase + string.digits + string.digits, k=20))
+		super(Property, self).save(*args **kwargs)
