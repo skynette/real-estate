@@ -69,3 +69,15 @@ class Property(TimeStampedUUIDModel):
 		self.description = str.description(self.description)
 		self.ref_code = "".join(random.choices(string.ascii_uppercase + string.digits + string.digits, k=20))
 		super(Property, self).save(*args **kwargs)
+
+	
+class PropertyViews(TimeStampedUUIDModel):
+	ip = models.CharField(_("IP"), max_length=255)
+	property = models.ForeignKey(Property, related_name="property_views", on_delete=models.CASCADE)
+
+	def __str__(self) -> str:
+		return f"Total views on - {self.property.title} is - {self.property.views} view(s)"
+
+	class Meta:
+		verbose_name = "Total views on Property"
+		verbose_name_plural = "Total Property views"
