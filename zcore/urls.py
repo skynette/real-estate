@@ -9,22 +9,23 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="App's API",
-      default_version='v1',
-      description="Some description",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@apps.local"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
+    openapi.Info(
+        title="App's API",
+        default_version='v1',
+        description="Some description",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@apps.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
 )
 
 urlpatterns = [
     path('supersecret/', admin.site.urls),
     path('api/v1/auth/', include('apps.authentication.urls')),
     path('api/v1/profile/', include('apps.profiles.urls')),
+    path('api/v1/properties/', include('apps.properties.urls')),
 
     # docs
     path('swagger(<format>\.json|\.yaml)/', schema_view.without_ui(cache_timeout=0), name='schema-json'),

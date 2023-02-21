@@ -1,6 +1,6 @@
 appdirs==1.4.4
 asgiref==3.6.0
-black==21.6b0
+autopep8==2.0.1
 certifi==2022.12.7
 cffi==1.15.1
 charset-normalizer==3.0.1
@@ -34,7 +34,7 @@ pathspec==0.11.0
 phonenumbers==8.12.33
 Pillow==8.3.2
 psycopg2-binary==2.9.1
-pycodestyle==2.7.0
+pycodestyle==2.10.0
 pycparser==2.21
 pyflakes==2.3.1
 PyJWT==2.1.0
@@ -51,5 +51,6 @@ social-auth-app-django==4.0.0
 social-auth-core==4.3.0
 sqlparse==0.4.3
 toml==0.10.2
+tomli==2.0.1
 uritemplate==4.1.1
 urllib3==1.26.14
