@@ -34,6 +34,7 @@ class ListAllPropertyAPIView(generics.ListAPIView):
 	search_fields = ["country", "city"]
 	ordering_fields = ["created_at"]
 
+list_all_property_api_view = ListAllPropertyAPIView.as_view()
 
 class ListAgentsPropertyAPIView(generics.ListAPIView):
 	"""Get properties for specific user or agents."""
@@ -48,9 +49,13 @@ class ListAgentsPropertyAPIView(generics.ListAPIView):
 		user = getattr(self.request, 'user', None)
 		return super().filter(user=user).order_by("-created_at")
 
+list_agents_property_api_view = ListAgentsPropertyAPIView.as_view()
+
 class PropertyViewsAPIView(generics.ListAPIView):
 	serializer_class = PropertyViewsSerializer
 	queryset = PropertyViews.objects.all()
+
+property_views_api_view = PropertyViewsAPIView.as_view()
 
 class PropertyDetailViewsAPIView(APIView):
 
@@ -72,6 +77,8 @@ class PropertyDetailViewsAPIView(APIView):
 
 		serializer = PropertySerializer(property, context={"request": request})
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+property_detail_api_view = PropertyDetailViewsAPIView.as_view()
 
 @api_view(["PUT"])
 @permission_classes([permissions.IsAuthenticated])
@@ -170,3 +177,5 @@ class PropertySearchAPIView(APIView):
 
 		serializer = self.serializer_class(queryset, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+property_search_api_view = PropertySearchAPIView.as_view()
