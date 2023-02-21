@@ -66,9 +66,9 @@ class Property(TimeStampedUUIDModel):
 
 	def save(self, *args, **kwargs):
 		self.title = str.title(self.title)
-		self.description = str.description(self.description)
-		self.ref_code = "".join(random.choices(string.ascii_uppercase + string.digits + string.digits, k=20))
-		super(Property, self).save(*args **kwargs)
+		self.description = str.capitalize(self.description)
+		self.ref_code = "ES"+"".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+		super().save(*args, **kwargs)
 
 	
 class PropertyViews(TimeStampedUUIDModel):
