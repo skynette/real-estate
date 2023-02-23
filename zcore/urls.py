@@ -26,7 +26,8 @@ urlpatterns = [
     path('api/v1/auth/', include('apps.authentication.urls')),
     path('api/v1/profile/', include('apps.profiles.urls')),
     path('api/v1/properties/', include('apps.properties.urls')),
-
+    path('api/v1/ratings/', include('apps.ratings.urls')),
+    path('api/v1/enquiries/', include('apps.enquiries.urls')),
     # docs
     path('swagger(<format>\.json|\.yaml)/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
