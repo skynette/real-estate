@@ -61,8 +61,17 @@ def create_agent_review_optimized(request, profile_id):
 		return Response({"detail": "You already reviewed this agent's profile"}, status=status.HTTP_403_FORBIDDEN)
 
 	Rating.objects.create(rater=request.user, agent=agent_profile, rating=rating, comment=comment)
-	agent_profile.num_reviews = agent_profile.agent_review.count()
-	agent_profile.average_rating = agent_profile.agent_review.aggregate(avg_rating=Avg('rating'))['avg_rating']
-	agent_profile.save()
+	# ratings = Rating.objects.filter(agent__id=profile_id)
+	# num = ratings.aggregate(num_reviews=Count('id'))['num_reviews']
+	# avg = ratings.aggregate(avg_rating=Avg('rating'))['avg_rating']
+
+	# agent_profile.num_reviews = num
+	# agent_profile.rating = avg
+	# agent_profile.save()
+
+	ratings = Rating.objects.filter(agent__id=profile_id)
+	num = ratings.count()
+	avg = ratings.aggregate(Avg('rating'))['rating__avg']
+	Profile.objects.filter(id=profile_id).update(num_reviews=num, rating=avg)
 
 	return Response({"message": "Review created successfully"}, status=status.HTTP_201_CREATED)

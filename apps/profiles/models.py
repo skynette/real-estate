@@ -26,7 +26,7 @@ class Profile(TimeStampedUUIDModel):
 	is_agent = models.BooleanField(_("IsAgent"), default=False, help_text="Are you an agent?")
 	top_agent = models.BooleanField(_("TopAgent"), default=False)
 	rating = models.DecimalField(_("Rating"), max_digits=4, decimal_places=2, null=True, blank=True)
-	num_reveiews = models.IntegerField(_("Number of Reveiews"), default=0, null=True, blank=True)
+	num_reviews = models.IntegerField(_("Number of Reveiews"), default=0, null=True, blank=True)
 
 	class Meta:
 		verbose_name = _("Profile")
