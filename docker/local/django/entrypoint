@@ -11,11 +11,11 @@ python << END
 import sys
 import psycopg2
 try:
-	pyscopg2.connect(
+	psycopg2.connect(
 		dbname="${POSTGRES_NAME}",
 		user = "${POSTGRES_USER}",
 		password = "${POSTGRES_PASSWORD}",
-		host = "${POSTGRES_PORT}",
+		host = "${POSTGRES_HOST}",
 		port = "${POSTGRES_PORT}",
 	)
 except psycopg2.OperationalError:
@@ -25,10 +25,9 @@ END
 }
 
 until postgres_ready; do
- >& echo "[*] waiting for postgresql to become available :("
+ >&2 echo "Waiting for PostgreSQL to become available....:-("
  sleep 1
 done
-
->& echo "[+] Postgres is ready :)"
+>&2 echo "PostgreSQL is ready!!!!...:-)"
 
 exec "$@"

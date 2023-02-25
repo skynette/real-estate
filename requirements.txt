@@ -19,7 +19,6 @@ django-templated-mail==1.1.1
 djangorestframework==3.12.4
 djangorestframework-simplejwt==5.2.2
 drf-yasg==1.21.4
-flake8==3.9.2
 idna==3.4
 inflection==0.5.1
 isort==5.9.3

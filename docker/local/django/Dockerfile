@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y build-essential \
 && apt-get install -y libpq-dev && apt-get install -y gettext \
 && apt-get install -y netcat gcc postgresql \
 && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-&& rm -f /var/lib/apt/lists/*
+&& rm -rf /var/lib/apt/lists/*
 
 COPY ./requirements.txt /app/requirements.txt
 
