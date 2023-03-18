@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -o errexit
+
+set -o nounset
+
+worker.ready(){
+	celery -A zcore inspect ping
+}
+
+until worker_ready; do
+	>&2 echo 'Celery workers not available :('
+	sleep 1
+
+done
+>&2 echo 'Celery workers available :)'
+
+flower \
+	--app=zcore \
+	--broker="${CELERY_BROKER}"
