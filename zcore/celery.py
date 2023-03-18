@@ -10,5 +10,5 @@ app = Celery("real_estate")
 
 app.config.from_object("zcore.settings.development", namespace="CELLERY")
 
-app.autodiscover(lambda: base.INSTALLED_APPS)
+app.autodiscover_tasks(lambda: base.INSTALLED_APPS)
 

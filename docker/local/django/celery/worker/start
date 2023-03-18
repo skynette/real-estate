@@ -4,4 +4,4 @@ set -o errexit
 
 set -o nounset
 
-celery -A zcore worker -l INFO
+watchmedo auto-restart -d zcore/ -p "*py" -- celery worker -A zcore worker -l INFO
