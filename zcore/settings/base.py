@@ -3,6 +3,14 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+# logging
+import logging
+import logging.config
+
+from django.utils.log import DEFAULT_LOGGING
+
+logger = logging.getLogger(__name__)
+
 load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -91,8 +99,6 @@ WSGI_APPLICATION = 'zcore.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -155,6 +161,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'NON_FIELD_ERRORS_KEY': 'error',
 }
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -187,13 +194,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-# logging
-import logging
-import logging.config
-
-from django.utils.log import DEFAULT_LOGGING
-
-logger = logging.getLogger(__name__)
 
 LOG_LEVEL = "INFO"
 logging.config.dictConfig(
@@ -201,13 +201,13 @@ logging.config.dictConfig(
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
-            "console":{
+            "console": {
                 "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
             },
-            "file":{
+            "file": {
                 "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
             },
-            "django.server":DEFAULT_LOGGING["formatters"]["django.server"],
+            "django.server": DEFAULT_LOGGING["formatters"]["django.server"],
         },
         "handlers": {
             "console": {
@@ -220,14 +220,21 @@ logging.config.dictConfig(
                 "formatter": "file",
                 "filename": "logs/real_estate.log",
             },
-            "django.server":DEFAULT_LOGGING["handlers"]["django.server"],
+            "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
         },
-        "loggers":{
-            "":{"level": "INFO", "handlers":["console","file"], "propagate":False},
-            "apps":{
-                "level": "INFO", "handlers":["console"], "propagate":False
+        "loggers": {
+            "": {"level": "INFO", "handlers": ["console", "file"], "propagate": False},
+            "apps": {
+                "level": "INFO", "handlers": ["console"], "propagate": False
             },
-            "django.server":DEFAULT_LOGGING["formatters"]["django.server"], 
-        }    
+            "django.server": DEFAULT_LOGGING["formatters"]["django.server"],
+        }
     }
 )
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Real Estate API',
+    'DESCRIPTION': 'API for Real Estate',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
