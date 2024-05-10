@@ -197,6 +197,18 @@ SIMPLE_JWT = {
 
 
 LOG_LEVEL = "INFO"
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+LOG_FILE = '/real_esate_api.log'
+LOG_PATH = LOG_DIR + LOG_FILE
+
+if not os.path.exists(LOG_DIR):
+    os.mkdir(LOG_DIR)
+
+if not os.path.exists(LOG_PATH):
+    f = open(LOG_PATH, 'a').close()
+else:
+    f = open(LOG_PATH,"w").close()
+
 logging.config.dictConfig(
     {
         "version": 1,
@@ -219,7 +231,7 @@ logging.config.dictConfig(
                 "level": "INFO",
                 "class": "logging.FileHandler",
                 "formatter": "file",
-                "filename": "logs/real_estate.log",
+                "filename": LOG_PATH,
             },
             "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
         },
@@ -236,6 +248,6 @@ logging.config.dictConfig(
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Real Estate API',
     'DESCRIPTION': 'API for Real Estate',
-    'VERSION': '1.0.0',
+    'VERSION': '1.1.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
