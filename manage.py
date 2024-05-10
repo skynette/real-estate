@@ -2,10 +2,14 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from dotenv import load_dotenv
+load_dotenv()
 
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'zcore.settings.development')
+print(ENVIRONMENT, "ENVIRONMENT in manage.py")
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zcore.settings.development')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', ENVIRONMENT)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

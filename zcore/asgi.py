@@ -11,6 +11,8 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'zcore.settings.render_env')
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'zcore.settings.development')
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', ENVIRONMENT)
 
 application = get_asgi_application()
