@@ -1,4 +1,5 @@
 from .base import *
+import dj_database_url
 
 EMAIL_BACKEND = 'djcelery_email.backends.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
@@ -11,17 +12,19 @@ DOMAIN = os.environ.get("DOMAIN")
 SITE_NAME = "Real Estate"
 
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': os.environ.get('POSTGRES_NAME'),
-		'USER': os.environ.get('POSTGRES_USER'),
-		'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-		'HOST': os.environ.get('POSTGRES_HOST'),
-		'PORT': os.environ.get('POSTGRES_PORT'),
-	}
+	'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL')
+    )
 }
 
 
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND')
 CELERY_TIMEZONE = "Africa/Lagos"
+
+
+if not DEBUG:    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
