@@ -23,6 +23,7 @@ class RegistrationAPIView(generics.GenericAPIView):
             500: OpenApiResponse(description="Internal server error"),
         },
         description="Register a new user account",
+        tags=["Authentication"],
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -52,6 +53,7 @@ class CustomTokenObtainPairView(generics.GenericAPIView):
             500: OpenApiResponse(description="Internal server error"),
         },
         description="Login a user",
+        tags=["Authentication"],
     )
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
