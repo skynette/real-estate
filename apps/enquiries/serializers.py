@@ -4,5 +4,5 @@ from .models import Enquiry
 class EnquirySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Enquiry
-		field = "__all__"
+		exclude = ['created_at', 'updated_at', 'id', 'pkid']
 

@@ -17,7 +17,7 @@ class AgentListAPIView(generics.ListAPIView):
     @extend_schema(
         description="Retrieve a list of all agents",
         responses={
-            200: ProfileSerializer,
+            200: ProfileSerializer(many=True),
         },
         tags=["agents"]
     )
@@ -35,7 +35,7 @@ class TopAgentListAPIView(generics.ListAPIView):
     @extend_schema(
         description="Retrieve a list of top agents",
         responses={
-            200: ProfileSerializer,
+            200: ProfileSerializer(many=True),
         },
         tags=["agents"]
     )
