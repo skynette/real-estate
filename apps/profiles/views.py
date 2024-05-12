@@ -14,6 +14,15 @@ class AgentListAPIView(generics.ListAPIView):
     queryset = Profile.objects.filter(is_agent=True)
     serializer_class = ProfileSerializer
 
+    @extend_schema(
+        description="Retrieve a list of all agents",
+        responses={
+            200: ProfileSerializer,
+        },
+        tags=["agents"]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 agent_list_api_view = AgentListAPIView.as_view()
 
@@ -22,6 +31,16 @@ class TopAgentListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Profile.objects.filter(top_agent=True)
     serializer_class = ProfileSerializer
+
+    @extend_schema(
+        description="Retrieve a list of top agents",
+        responses={
+            200: ProfileSerializer,
+        },
+        tags=["agents"]
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 top_agent_list_api_view = TopAgentListAPIView.as_view()
