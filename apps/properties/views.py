@@ -102,8 +102,18 @@ class PropertyViewsAPIView(generics.ListAPIView):
 property_views_api_view = PropertyViewsAPIView.as_view()
 
 
-class PropertyDetailViewsAPIView(APIView):
+class PropertyDetailViewsAPIView(generics.GenericAPIView):
+    serializer_class = PropertySerializer
 
+    @extend_schema(
+        description="Retrieve a property detail",
+        responses={
+            200: PropertySerializer,
+            400: "Bad request",
+            500: "Internal server error"
+        },
+        tags=["properties"]
+    )
     def get(self, request, slug, *args, **kwargs):
         property = Property.objects.get(slug=slug)
 
@@ -120,128 +130,157 @@ class PropertyDetailViewsAPIView(APIView):
             property.views += 1
             property.save()
 
-        serializer = PropertySerializer(property, context={"request": request})
+        serializer = self.get_serializer(property, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 property_detail_api_view = PropertyDetailViewsAPIView.as_view()
 
-# view to update property details
 
-
-@api_view(["PUT"])
-@permission_classes([permissions.IsAuthenticated])
-def update_property_api_view(request, slug):
-    property = Property.objects.filter(slug=slug).first()
-    if not property:
-        raise PropertyNotFoundException
-    user = getattr(request, 'user', None)
-    if property.user != user:
-        return Response({"error": "You can't update a property that doesn't belong to you."}, status=status.HTTP_403_FORBIDDEN)
-
-    data = request.data
-    serializer = PropertySerializer(property, data, many=False, partial=True)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-# view to create a new property
-
-
-@api_view(["POST"])
-@permission_classes([permissions.IsAuthenticated])
-def create_property_api_view(request):
-    user = getattr(request, 'user', None)
-    data = request.data
-    data['user'] = user.pkid
-    serializer = PropertyCreateSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        logger.info(
-            f"Property {serializer.data.get('title')} created"
-        )
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# view to delete a property
-
-
-@api_view(["DELETE"])
-@permission_classes([permissions.IsAuthenticated])
-def delete_property_api_view(request, slug):
-    property = Property.objects.filter(slug=slug).first()
-    if not property:
-        raise PropertyNotFoundException
-    user = getattr(request, 'user', None)
-    if property.user != user:
-        return Response({"error": "you can't delete a property that is not yours"}, status=status.HTTP_403_FORBIDDEN)
-    delete_operation = property.delete()
-    data = {}
-    if delete_operation:
-        data["success"] = "Deleted successfully"
-        return Response(data, status=status.HTTP_202_ACCEPTED)
-    else:
-        data["failure"] = "Deletion failed"
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
-
-# view to upload images for a specific property
-
-
-@api_view(["POST"])
-def upload_property_image_api_view(request):
-    data = request.data
-    property_id = data["property_id"]
-    property = Property.objects.filter(id=property_id).first()
-    property.cover_photo = request.FILES.get("cover_photo", None)
-    property.photo1 = request.FILES.get("photo1", None)
-    property.photo2 = request.FILES.get("photo2", None)
-    property.photo3 = request.FILES.get("photo3", None)
-    property.photo4 = request.FILES.get("photo4", None)
-    property.save()
-    return Response({"success": "Image(s) uploaded successfully"}, status=status.HTTP_201_CREATED)
-
-# view to search for properties with different criteria
-
-
-class PropertySearchAPIView(APIView):
+class UpdatePropertyAPIView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PropertySerializer
 
-    def post(self, request, *args, **kwargs):
-        queryset = Property.objects.filter(published_status=True)
-        data = self.request.data
+    @extend_schema(
+        description="Update a property",
+        request=PropertySerializer,
+        responses={
+            200: PropertySerializer,
+            400: "Bad request",
+            500: "Internal server error"
+        },
+        tags=["properties"]
+    )
+    def put(self, request, slug, *args, **kwargs):
+        property = Property.objects.filter(slug=slug).first()
+        if not property:
+            raise PropertyNotFoundException
+        user = getattr(request, 'user', None)
+        if property.user != user:
+            return Response({"error": "You can't update a property that doesn't belong to you."}, status=status.HTTP_403_FORBIDDEN)
 
-        advert_type = data['advert_type']
-        queryset = queryset.filter(advert_type__iexact=advert_type)
-
-        property_type = data['property_type']
-        queryset = queryset.filter(property_type__iexact=property_type)
-
-        price = data['price']
-        if price == "$0+":
-            price = 0
-        elif price == "$50,000+":
-            price = 50000
-        # go on till 600,000
-        elif price == "Any":
-            price = -1
-
-        if price != -1:
-            queryset = queryset.filter(price__gte=price)
-
-        bedrooms = data["bedrooms"]
-        if bedrooms == "0+":
-            bedrooms = 0
-        # go on till 5
-        elif bedrooms == "Any":
-            bedrooms = -1
-        queryset = queryset.filter(bedrooms__gte=bedrooms)
-
-        # do same for bathrooms
-
-        serializer = self.serializer_class(queryset, many=True)
+        data = request.data
+        serializer = self.get_serializer(property, data, many=False, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+update_property_api_view = UpdatePropertyAPIView.as_view()
+
+
+class CreatePropertyAPIView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PropertyCreateSerializer
+
+    @extend_schema(
+        description="Create a property",
+        request=PropertyCreateSerializer,
+        responses={
+            200: PropertyCreateSerializer,
+            400: "Bad request",
+            500: "Internal server error"
+        },
+        tags=["properties"]
+    )
+    def post(self, request):
+        user = getattr(request, 'user', None)
+        data = request.data
+        data['user'] = user.pkid
+        serializer = self.get_serializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(
+                f"Property {serializer.data.get('title')} created"
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+create_property_api_view = CreatePropertyAPIView.as_view()
+
+
+class DeletePropertyAPIView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PropertySerializer
+
+    @extend_schema(
+        description="Delete a property",
+        responses={
+            200: PropertySerializer,
+            400: "Bad request",
+            500: "Internal server error"
+        },
+        tags=["properties"]
+    )
+    def delete(self, request, slug, format=None):
+        property = Property.objects.filter(slug=slug).first()
+        if not property:
+            raise PropertyNotFoundException
+        user = getattr(request, 'user', None)
+        if property.user != user:
+            return Response({"error": "You can't delete a property that doesn't belong to you."}, status=status.HTTP_403_FORBIDDEN)
+        delete_operation = property.delete()
+        data = {}
+        if delete_operation:
+            data["success"] = "Deleted successfully"
+            return Response(data, status=status.HTTP_202_ACCEPTED)
+        else:
+            data["failure"] = "Deletion failed"
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
+
+delete_property_api_view = DeletePropertyAPIView.as_view()
+
+
+class UploadPropertyImageAPIView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = None
+
+    @extend_schema(
+        description="Upload property images",
+        responses={
+            201: {"success": "Image(s) uploaded successfully"},
+            400: "Bad request",
+            500: "Internal server error"
+        },
+        tags=["properties"]
+    )
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        property_id = data["property_id"]
+        property = Property.objects.filter(id=property_id).first()
+        property.cover_photo = request.FILES.get("cover_photo", None)
+        property.photo1 = request.FILES.get("photo1", None)
+        property.photo2 = request.FILES.get("photo2", None)
+        property.photo3 = request.FILES.get("photo3", None)
+        property.photo4 = request.FILES.get("photo4", None)
+        property.save()
+        return Response({"success": "Image(s) uploaded successfully"}, status=status.HTTP_201_CREATED)
+
+
+upload_property_image_api_view = UploadPropertyImageAPIView.as_view()
+
+
+class PropertySearchFilter(django_filters.FilterSet):
+    price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
+    bedrooms = django_filters.NumberFilter(field_name="bedrooms", lookup_expr='gte')
+    # Add more filters for other fields as needed
+
+    class Meta:
+        model = Property
+        fields = ['advert_type', 'property_type', 'price', 'bedrooms']
+
+
+class PropertySearchAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PropertySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PropertySearchFilter
+
+    def get_queryset(self):
+        queryset = Property.objects.filter(published_status=True)
+        return queryset
 
 
 property_search_api_view = PropertySearchAPIView.as_view()
