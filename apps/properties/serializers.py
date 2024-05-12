@@ -11,7 +11,7 @@ class PropertySerializer(serializers.ModelSerializer):
 		model = Property
 		exclude = ["pkid", "updated_at"]
 
-	def get_user(self, obj):
+	def get_user(self, obj) -> str:
 		return obj.user.username
 
 

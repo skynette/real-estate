@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.ratings.serializers import RatingSerializer
 from apps.users.serializers import UserSerializer
 from .models import Profile
-
+from typing import Any, Dict, List
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username")
@@ -18,17 +18,17 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         exclude = ["pkid"]
 
-    def get_full_name(self, obj):
+    def get_full_name(self, obj: Profile) -> str:
         first_name = obj.user.first_name.title()
         last_name = obj.user.last_name.title()
         return f"{first_name} {last_name}"
 
-    def get_reviews(self, obj):
+    def get_reviews(self, obj: Profile) -> List[Dict[str, Any]]:
         reviews = obj.agent_review.all()
         serializer = RatingSerializer(reviews, many=True)
         return serializer.data
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: Profile) -> Dict[str, Any]:
         representation = super().to_representation(instance)
         if instance.top_agent:
             representation['top_agent'] = True
@@ -42,7 +42,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
         model = Profile
         exclude = ['pkid', 'created_at', 'updated_at']
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: Profile) -> Dict[str, Any]:
         representation = super().to_representation(instance)
         if instance.top_agent:
             representation['top_agent'] = True

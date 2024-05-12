@@ -10,8 +10,8 @@ class RatingSerializer(serializers.ModelSerializer):
         model = Rating
         exclude = ["updated_at", "pk"]
 
-    def get_rater(self, obj):
+    def get_rater(self, obj: Rating) -> str:
         return obj.rater.username
 
-    def get_agent(self, obj):
+    def get_agent(self, obj: Rating) -> str:
         return obj.agent.user.username

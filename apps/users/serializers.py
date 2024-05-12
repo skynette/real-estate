@@ -2,6 +2,7 @@ from django_countries.serializer_fields import CountryField
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from typing import Dict, Any
 
 User = get_user_model()
 
@@ -22,16 +23,17 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "first_name", "last_name", "full_name",
                   "gender", "phone_number", "country", "city", "profile_photo", "top_agent"]
 
-    def get_first_name(self, obj):
+
+    def get_first_name(self, obj: User) -> str:
         return obj.first_name.title()
 
-    def get_last_name(self, obj):
+    def get_last_name(self, obj: User) -> str:
         return obj.last_name.title()
 
-    def get_full_name(self, obj):
+    def get_full_name(self, obj: User) -> str:
         return obj.first_name.title() + " " + obj.last_name.title()
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: User) -> Dict[str, Any]:
         representation = super(UserSerializer, self).to_representation(instance)
         if instance.is_superuser:
             representation['admin'] = True
