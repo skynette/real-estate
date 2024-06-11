@@ -6,7 +6,8 @@ from .models import Profile
 from .renderers import ProfileJSONRenderer
 from .serializers import ProfileSerializer, UpdateProfileSerializer
 
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiExample
+from drf_spectacular.utils import OpenApiResponse
 
 
 class AgentListAPIView(generics.ListAPIView):
@@ -23,6 +24,7 @@ class AgentListAPIView(generics.ListAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
 
 agent_list_api_view = AgentListAPIView.as_view()
 
@@ -55,8 +57,30 @@ class GetProfileAPIView(generics.GenericAPIView):
         description="Retrieve the profile of the authenticated user",
         responses={
             200: ProfileSerializer,
-            401: "Unauthorized",
-            404: "Not Found",
+            401: OpenApiResponse(
+                response={'application/json'},
+                description="Unauthorized",
+                examples=[
+                    OpenApiExample(
+                        name="Unauthorized",
+                        value={
+                            "error": "Unauthorized"
+                        }
+                    )
+                ]
+            ),
+            404: OpenApiResponse(
+                response={'application/json'},
+                description="Not Found",
+                examples=[
+                    OpenApiExample(
+                        name="Not Found",
+                        value={
+                            "error": "Not Found"
+                        }
+                    )
+                ]
+            )
         },
         tags=["profiles"]
     )
